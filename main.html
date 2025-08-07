@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelFinder - ابحث عن أفضل العروض</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f7f9fc;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* الشريط العلوي */
+        .top-bar {
+            background: linear-gradient(90deg, #0f4c75, #1b262c);
+            color: white;
+            padding: 10px 0;
+            font-size: 0.9rem;
+        }
+        
+        .top-bar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        
+        /* شريط التنقل */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #0f4c75;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-left: 8px;
+            color: #ff7e67;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 25px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: #0f4c75;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: #ff7e67;
+            bottom: -5px;
+            left: 0;
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* قسم البحث */
+        .search-section {
+            background: linear-gradient(rgba(15, 76, 117, 0.9), rgba(27, 38, 44, 0.9)), url('https://images.unsplash.com/photo-1501555088652-021faa106b9b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80') center/cover no-repeat;
+            padding: 80px 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .search-title {
+            color: #0f4c75;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+        
+        .search-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #0f4c75;
+        }
+        
+        .search-btn {
+            background: #ff7e67;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .search-btn:hover {
+            background: #0f4c75;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .search-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .tag {
+            background: rgba(15, 76, 117, 0.1);
+            color: #0f4c75;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tag:hover {
+            background: #0f4c75;
+            color: white;
+        }
+        
+        /* نتائج البحث */
+        .results-section {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: #0f4c75;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: #ff7e67;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-label {
+            color: #4b5563;
+            font-weight: 500;
+        }
+        
+        .filter-select {
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .hotel-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+        
+        .hotel-info {
+            padding: 25px;
+        }
+        
+        .hotel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .hotel-name {
+            color: #0f4c75;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .hotel-rating {
+            background: #ff7e67;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .hotel-location {
+            display: flex;
+            align-items: center;
+            color: #6b7280;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .hotel-location i {
+            margin-left: 8px;
+            color: #ff7e67;
+        }
+        
+        .hotel-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            color: #4b5563;
+        }
+        
+        .feature i {
+            color: #ff7e67;
+        }
+        
+        .hotel-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .price {
+            font-size: 1.5rem;
+            color: #0f4c75;
+            font-weight: bold;
+        }
+        
+        .price small {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: normal;
+        }
+        
+        .book-btn {
+            background: #0f4c75;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .book-btn:hover {
+            background: #ff7e67;
+            transform: translateY(-3px);
+        }
+        
+        /* الإعلان */
+        .promo-section {
+            background: linear-gradient(90deg, #ff7e67, #ff9a8b);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            margin: 70px 0;
+        }
+        
+        .promo-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .promo-title {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .promo-text {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* التذييل */
+        footer {
+            background: #1b262c;
+            color: white;
+            padding: 70px 0 30px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            padding: 0 20px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 3px;
+            background: #ff7e67;
+            bottom: 0;
+            right: 0;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #ff7e67;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .social-icons a:hover {
+            background: #ff7e67;
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        /* تصميم متجاوب */
+        @media (max-width: 992px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px 0;
+            }
+            
+            .nav-links {
+                margin-top: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-links li {
+                margin: 10px 15px;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .filters {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .hotel-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .hotel-footer {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .book-btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .promo-title {
+                font-size: 1.8rem;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <div class="top-bar-content">
+            <div class="contact-info">
+                <i class="fas fa-phone"></i> 920001234 | 
+                <i class="fas fa-envelope"></i> info@travelfinder.com
+            </div>
+            <div class="language-currency">
+                <select class="filter-select">
+                    <option>العربية</option>
+                    <option>English</option>
+                </select>
+                <select class="filter-select">
+                    <option>SAR ريال سعودي</option>
+                    <option>USD دولار أمريكي</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <!-- شريط التنقل -->
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <i class="fas fa-map-marked-alt"></i> TravelFinder
+            </a>
+            <ul class="nav-links">
+                <li><a href="#"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="#"><i class="fas fa-heart"></i> المفضلة</a></li>
+                <li><a href="#"><i class="fas fa-bell"></i> التنبيهات</a></li>
+                <li><a href="#"><i class="fas fa-user"></i> حسابي</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <!-- قسم البحث -->
+    <section class="search-section">
+        <div class="search-container">
+            <h2 class="search-title">ابحث عن أفضل العروض والفنادق</h2>
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="أين تريد الذهاب؟">
+                <input type="text" class="search-input" placeholder="تاريخ الوصول">
+                <input type="text" class="search-input" placeholder="تاريخ المغادرة">
+                <input type="text" class="search-input" placeholder="2 بالغين - 0 أطفال">
+                <button class="search-btn"><i class="fas fa-search"></i> بحث</button>
+            </div>
+            <div class="search-tags">
+                <span class="tag">عروض اليوم</span>
+                <span class="tag">شاطئ</span>
+                <span class="tag">شقق فندقية</span>
+                <span class="tag">عروض العائلة</span>
+                <span class="tag">رحلات رومانسية</span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- نتائج البحث -->
+    <section class="results-section">
+        <div class="section-title">
+            <h2>نتائج البحث</h2>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <span class="filter-label">ترتيب حسب:</span>
+                <select class="filter-select">
+                    <option>الأعلى تقييماً</option>
+                    <option>الأقل سعراً</option>
+                    <option>الأعلى سعراً</option>
+                    <option>الأقرب</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <span class="filter-label">السعر:</span>
+                <select class="filter-select">
+                    <option>أي سعر</option>
+                    <option>اقتصادي</option>
+                    <option>متوسط</option>
+                    <option>فاخر</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <span class="filter-label">التقييم:</span>
+                <select class="filter-select">
+                    <option>أي تقييم</option>
+                    <option>5 نجوم</option>
+                    <option>4 نجوم</option>
+                    <option>3 نجوم</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="results-grid">
+            <!-- فندق 1 -->
+            <div class="result-card">
+                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="فندق" class="hotel-img">
+                <div class="hotel-info">
+                    <div class="hotel-header">
+                        <h3 class="hotel-name">فندق شاطئ الريح</h3>
+                        <div class="hotel-rating">
+                            <i class="fas fa-star"></i> 4.8
+                        </div>
+                    </div>
+                    <div class="hotel-location">
+                        <i class="fas fa-map-marker-alt"></i> جدة، المملكة العربية السعودية
+                    </div>
+                    <div class="hotel-features">
+                           <span class="feature"><i class="fas fa-spa"></i> سبا</span>
+                           <span class="feature"><i class="fas fa-dumbbell"></i> نادي رياضي</span>
+                           <span class="feature"><i class="fas fa-car"></i> موقف سيارات</span>
+                    </div>
+                 <div class="hotel-footer">
+                   <div class="price">
+        380 ريال <small>ليلة واحدة</small>
+                   </div>
+    <button class="book-btn">احجز الآن</button>
+                  </div>
+                </div>
+            </div>
+            
+            <!-- فندق 2 -->
+            <div class="result-card">
+                <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="فندق" class="hotel-img">
+                <div class="hotel-info">
+                    <div class="hotel-header">
+                        <h3 class="hotel-name">منتجع الواحة الخضراء</h3>
+                        <div class="hotel-rating">
+                            <i class="fas fa-star"></i> 4.6
+                        </div>
+                    </div>
+                    <div class="hotel-location">
+                        <i class="fas fa-map-marker-alt"></i> أبها، المملكة العربية السعودية
+                    </div>
+                    <div class="hotel-features">
+                        <span class="feature"><i class="fas fa-spa"></i> سبا</span>
+                        <span class="feature"><i class="fas fa-dumbbell"></i>
+                                        </div>
+        </div>
+    </section>
+    
+    <!-- قسم الإعلان -->
+    <section class="promo-section">
+        <div class="promo-content">
+            <h2 class="promo-title">وفر حتى 50% على حجوزاتك!</h2>
+            <p class="promo-text">اشترك في نشرتنا البريدية واحصل على أفضل العروض الحصرية مباشرة إلى بريدك الإلكتروني</p>
+            <div class="search-box" style="justify-content: center;">
+                <input type="email" class="search-input" placeholder="بريدك الإلكتروني" style="max-width: 350px;">
+                <button class="search-btn">اشترك الآن</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- التذييل -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>عن TravelFinder</h3>
+                <p style="margin-bottom:20px; color: #cbd5e1;">نساعدك في العثور على أفضل العروض وأرخص الأسعار لأكثر من مليون فندق وشقة في جميع أنحاء العالم.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h3>الوجهات الشعبية</h3>
+                <ul class="footer-links">
+                    <li><a href="#">فنادق الرياض</a></li>
+                    <li><a href="#">فنادق جدة</a></li>
+                    <li><a href="#">فنادق دبي</a></li>
+                    <li><a href="#">فنادق إسطنبول</a></li>
+                    <li><a href="#">فنادق باريس</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>روابط مفيدة</h3>
+                <ul class="footer-links">
+                    <li><a href="#">أسئلة شائعة</a></li>
+                    <li><a href="#">شروط الاستخدام</a></li>
+                    <li><a href="#">سياسة الخصوصية</a></li>
+                    <li><a href="#">اتصل بنا</a></li>
+                    <li><a href="#">وظائف</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>طرق الدفع</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                    <i class="fab fa-cc-visa" style="font-size: 2.5rem; color: #cbd5e1;"></i>
+                    <i class="fab fa-cc-mastercard" style="font-size: 2.5rem; color: #cbd5e1;"></i>
+                    <i class="fab fa-cc-paypal" style="font-size: 2.5rem; color: #cbd5e1;"></i>
+                    <i class="fab fa-cc-apple-pay" style="font-size: 2.5rem; color: #cbd5e1;"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>© 2023 TravelFinder. جميع الحقوق محفوظة. تم التصميم والتطوير بواسطة فريق TravelFinder</p>
+        </div>
+    </footer>
+    
+    <script>
+        // إضافة تفاعل بسيط للأزرار
+        document.querySelectorAll('.book-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const hotelName = this.closest('.result-card').querySelector('.hotel-name').textContent;
+                alert(`تم بدء عملية حجز في ${hotelName}!\nسيتم تحويلك إلى صفحة الدفع.`);
+            });
+        });
+        
+        // تفاعل مع علامات التصنيف
+        document.querySelectorAll('.tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.querySelector('.search-input').value = this.textContent;
+            });
+        });
+    </script>
+</body>
+</html>
